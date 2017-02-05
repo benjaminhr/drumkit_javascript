@@ -58,17 +58,32 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-window.addEventListener('keydown', function(e){
+function playSound(e) {
+  const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+
   //variable selects all audio elements with data-key
   //using ES6 template strings it specifices keyCode
   const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-  if(!audio) return; //stops function from playing all together
+
+  //stops function from playing all together
+  if(!audio) return;
+
   //if key is hit multiple times, it rewinds to beginning
   audio.currentTime = 0;
   audio.play();
+  //adds css transform
+  key.classList.add('playing');
+};
 
+//instead of using setTimeout, more usable approach
+function removeTransition(e){
+  if(e.propertyName !== 'transform') return; //skip if not transform
+  this.classList.remove('playing'); //removes css transform
+};
 
-});
+const keys = document.querySelectorAll('.key');
+keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+window.addEventListener('keydown', playSound);
 </script>
 
 
